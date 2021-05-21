@@ -1,0 +1,41 @@
+@mixin _768 {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+
+//@mixin _768 {
+//  @media (min-width: 768px) {
+//    @content;
+//  }
+//}
+//
+//@mixin _992 {
+//  @media (min-width: 992px) {
+//    @content;
+//  }
+//}
+//
+@mixin _1200 {
+  @media (min-width: 1200px) {
+    @content;
+  }
+}
+
+@mixin _1350 {
+  @media (min-width: 1350px) {
+    @content;
+  }
+}
+
+@mixin _1600 {
+  @media (min-width: 1600px) {
+    @content;
+  }
+}
+
+@mixin _1920 {
+  @media (min-width: 1920px) {
+    @content;
+  }
+}

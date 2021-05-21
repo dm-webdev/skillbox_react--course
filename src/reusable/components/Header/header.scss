@@ -1,0 +1,42 @@
+@import 'src/assets/styles/media';
+
+
+.header__logo {
+  margin-right: 10px;
+  margin-left: auto;
+
+  @include _768 {
+    margin-right: auto;
+    margin-left: 10px;
+  }
+
+  .header__logo__img {
+    width: 150px;
+
+    @include _768 {
+      width: 180px;
+    }
+
+    @include _1200 {
+      width: 240px;
+    }
+  }
+}
+
+.header__link {
+  display: none;
+
+  @include _768 {
+    display: block;
+    margin-right: 30px;
+    padding-left: 25px;
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+
+    @include _1200 {
+      padding-left: 30px;
+      background-size: 24px 24px;
+    }
+  }
+}
