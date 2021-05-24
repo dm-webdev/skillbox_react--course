@@ -18,7 +18,7 @@ function InfoPage() {
   return (
     <div className='container'>
       <Typography variant='h1' color='secondary' className='heading'>
-        Добро пожаловать в программу Pomodoro!
+        Добро пожаловать в Pomodoro!
       </Typography>
       <Typography paragraph>
         Метод «Помодоро» — это техника управления временем, разработанная студентом
@@ -41,7 +41,7 @@ function InfoPage() {
               <ListItemIcon style={{ minWidth: '2rem' }}>
                 <span className='list__item__img' style={{ backgroundImage: `url(${tomato})` }}/>
               </ListItemIcon>
-              <ListItemText primary={item} />
+              <ListItemText primary={item}/>
             </ListItem>
           ))
         }

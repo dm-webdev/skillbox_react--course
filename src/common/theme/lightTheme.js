@@ -9,11 +9,9 @@ export const lightTheme = {
       light: '#ffffff',
       main: '#ffffff',
       dark: '#4ba3c7',
-      contrastText: '#DC3E22',
     },
     secondary: {
       light: '#534bae',
-      // main: '#1a237e',
       main: '#DC3E22',
       dark: '#000051',
       contrastText: '#81d4fa',
@@ -22,10 +20,19 @@ export const lightTheme = {
       primary: '#333333',
       secondary: '#000051'
     },
-    // background: {
-    //   paper: '#e1f5fe',
-    //   default: '#fdffff',
-    // },
     divider: '#DC3E22',
+    primaryBtn: {
+      text: '#ffffff',
+      main: '#A8B64F',
+      hover: '#899441',
+    },
+    dotedBtn: {
+      main: '#C4C4C4',
+      text: '#999999',
+    },
+    input: {
+      main: '#F4F4F4',
+      text: '#999999',
+    },
   },
 };

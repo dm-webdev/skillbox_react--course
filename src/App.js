@@ -1,28 +1,17 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { Header } from './reusable/components/Header/Header';
-import MainPage from './pages/MainPage/MainPage';
+// import { Header } from './reusable/components/Header/Header';
 import { useState } from 'react';
 import Menu from './reusable/components/Menu/Menu';
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import navItems from './common/utils/navItems';
+import { Header } from './reusable/components/Header/Header';
 
-
-// export const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
-  // drawer: {
-  //   [theme.breakpoints.up('sm')]: {
-  //     width: drawerWidth,
-  //     flexShrink: 0,
-  //   },
-  // },
   toolbar: theme.mixins.toolbar,
-  // drawerPaper: {
-  //   width: drawerWidth,
-  // },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
@@ -36,13 +25,10 @@ function App() {
     setMobileOpen(!mobileOpen);
   };
 
-
   return (
     <div className="App">
       <div className={classes.root}>
-        <Header
-          handleDrawerToggle={handleDrawerToggle}
-        />
+        <Header handleDrawerToggle={handleDrawerToggle}/>
 
         <Menu
           mobileOpen={mobileOpen}
@@ -60,21 +46,14 @@ function App() {
                 </Route>
               ))
             }
-
+            <Route path='*'>
+              <Redirect to='/main' />
+            </Route>
           </Switch>
-
-
-          {/*<MainPage />*/}
-
-
         </main>
       </div>
     </div>
   );
 }
-
-// App.propTypes = {
-//   window: PropTypes.func,
-// };
 
 export default App;

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppThemeContext } from '../../../common/theme/AppThemeProvider';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,6 +10,9 @@ import {
 import navItems from '../../../common/utils/navItems';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
+import { format } from 'date-fns';
+import ruLocale from 'date-fns/locale/ru';
+import { capitalizeFirstLetter } from '../../../common/utils/formatUtils';
 
 
 export const drawerWidth = 200;
@@ -25,6 +28,11 @@ const useStyles = makeStyles(theme => ({
     ...theme.mixins.toolbar,
     padding: '10px 0',
     textAlign: 'center',
+    fontWeight: 600,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    color: theme.palette.text.secondary,
   },
   drawerPaper: {
     width: drawerWidth,
@@ -33,7 +41,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   navList: {
-    padding: '20px 0'
+    padding: '20px 0',
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -52,11 +61,30 @@ function Menu({ mobileOpen, handleDrawerToggle }) {
     }
   };
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const watch = setInterval (() => {
+      setCurrentTime(new Date())
+    }, 60000);
+
+    return () => {
+      clearInterval(watch)
+    }
+  }, [])
+
   const drawer = (
     <div>
       <div className={classes.toolbar}>
         <div>
-          Monday {classes.toolbar}
+          {capitalizeFirstLetter(format(currentTime, 'EEEEEE. p', {
+            locale: ruLocale
+          }))}
+        </div>
+        <div>
+          {capitalizeFirstLetter(format(new Date(), 'dd MMM yyyy г.', {
+            locale: ruLocale
+          }))}
         </div>
       </div>
       <Divider />

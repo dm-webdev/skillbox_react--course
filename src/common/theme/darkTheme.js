@@ -18,13 +18,26 @@ export const darkTheme = {
       contrastText: 'rgba(0, 0, 0, 0.87)',
     },
     text: {
-      primary: '#ea80fc',
-      secondary: '#81d4fa'
+      primary: '#81d4fa',
+      secondary: '#ea80fc'
     },
     background: {
       paper: '#404040',
       default: '#494949',
     },
     divider: '#7ecb20',
+    primaryBtn: {
+      text: '#f3f3f3',
+      main: '#02a191',
+      hover: '#03DAC5',
+    },
+    dotedBtn: {
+      main: '#b2ff59',
+      text: '#ea80fc',
+    },
+    input: {
+      main: '#404040',
+      text: '#e7ff8c',
+    },
   },
 };

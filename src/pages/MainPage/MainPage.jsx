@@ -1,30 +1,40 @@
-import {
-  Toolbar,
-  Typography
-} from '@material-ui/core';
+import './mainPage.scss';
+import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import withTitleUpdate from '../../reusable/hocs/withTitleUpdate';
+import { getNameOfDaysPeriod } from '../../common/utils/formatUtils';
+import { TodoList } from '../../reusable/components/TodoList/TodoList';
+//TODO перенести store
+import store from './../../data/staticStore';
 
+
+const useStyles = makeStyles(theme => ({
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+}));
 
 function MainPage() {
+  const classes = useStyles();
 
   return (
-    <>
-      <Toolbar />
-      <Typography variant='h1' color='secondary'>
-        "This is a main page!"
+    <div className='container flex-column'>
+      <Typography variant='h1' color='secondary' className='heading'>
+        Привет, { store.settings.userName }!&ensp;
+        {getNameOfDaysPeriod()}, чтобы поработать!
       </Typography>
-      <Typography paragraph>
-        Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-        facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-        tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-        consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-        vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
-        hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
-        tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
-        nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
-        accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-      </Typography>
-    </>
+
+      <Grid container spacing={1}>
+        <Grid item xs={12} md={6}>
+          <TodoList />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Paper className={classes.paper}>xs=12 sm=6</Paper>
+        </Grid>
+      </Grid>
+    </div>
   );
 }
 
