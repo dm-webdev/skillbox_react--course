@@ -2,52 +2,29 @@ import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
 import { AppThemeContext } from '../../../common/theme/AppThemeProvider';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import {
-  Divider, Drawer, FormControlLabel, Hidden,
-  List, ListItem, ListItemIcon, ListItemText, Switch,useTheme
+  Divider,
+  Drawer,
+  FormControlLabel,
+  Hidden,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Switch,
+  useTheme,
 } from '@material-ui/core';
-import navItems from '../../../common/utils/navItems';
+import navItems from '../../../common/staticData/navItems';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { capitalizeFirstLetter } from '../../../common/utils/formatUtils';
+import { menuStyles } from './menuStyles';
 
-
-export const drawerWidth = 200;
-
-const useStyles = makeStyles(theme => ({
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  toolbar: {
-    ...theme.mixins.toolbar,
-    padding: '10px 0',
-    textAlign: 'center',
-    fontWeight: 600,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    color: theme.palette.text.secondary,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  btnWrap: {
-    justifyContent: 'center',
-  },
-  navList: {
-    padding: '20px 0',
-    color: theme.palette.text.secondary,
-  },
-}));
 
 function Menu({ mobileOpen, handleDrawerToggle }) {
-  const classes = useStyles();
+  const classes = menuStyles();
   const theme = useTheme();
   const { currentThemeName, setCurrentThemeName } = useContext(AppThemeContext);
   const isDarkTheme = currentThemeName === 'darkTheme';
@@ -55,9 +32,9 @@ function Menu({ mobileOpen, handleDrawerToggle }) {
   const handleThemeChange = (ev) => {
     const choice = ev.target.checked;
     if (choice) {
-      setCurrentThemeName('darkTheme')
+      setCurrentThemeName('darkTheme');
     } else {
-      setCurrentThemeName('lightTheme')
+      setCurrentThemeName('lightTheme');
     }
   };
 
@@ -65,26 +42,22 @@ function Menu({ mobileOpen, handleDrawerToggle }) {
 
   useEffect(() => {
     const watch = setInterval (() => {
-      setCurrentTime(new Date())
+      setCurrentTime(new Date());
     }, 60000);
 
     return () => {
-      clearInterval(watch)
-    }
+      clearInterval(watch);
+    };
   }, [])
 
   const drawer = (
     <div>
       <div className={classes.toolbar}>
         <div>
-          {capitalizeFirstLetter(format(currentTime, 'EEEEEE. p', {
-            locale: ruLocale
-          }))}
+          {capitalizeFirstLetter(format(currentTime, 'EEEEEE. p', { locale: ruLocale }))}
         </div>
         <div>
-          {capitalizeFirstLetter(format(new Date(), 'dd MMM yyyy г.', {
-            locale: ruLocale
-          }))}
+          {capitalizeFirstLetter(format(new Date(), 'dd MMM yyyy г.', { locale: ruLocale }))}
         </div>
       </div>
       <Divider />

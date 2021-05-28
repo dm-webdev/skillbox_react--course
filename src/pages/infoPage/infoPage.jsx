@@ -1,17 +1,17 @@
 import './infoPage.scss'
-import { Link, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import {
+  Divider,
+  Link,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography
+} from '@material-ui/core';
 import withTitleUpdate from '../../reusable/hocs/withTitleUpdate';
 import tomato from '../../assets/img/tomato.svg';
+import rulesList from '../../common/staticData/instructionList';
 
-const rulesList = [
-  'Установите в своём списке дел цель или задачу, которую необходимо выполнить.',
-  'Установите таймер «Помодоро»',
-  'Работайте в течение заданного периода времени.',
-  'Когда таймер зазвонит, отметьте галочкой свой рабочий интервал.',
-  'После каждого рабочего сеанса делайте 5-минутный перерыв.',
-  'После четвёртого сеанса сделайте более длительный перерыв — 15–30 минут.',
-  'Переустановите таймер и начните процесс снова.',
-];
 
 function InfoPage() {
 
@@ -20,6 +20,9 @@ function InfoPage() {
       <Typography variant='h1' color='secondary' className='heading'>
         Добро пожаловать в Pomodoro!
       </Typography>
+
+      <Divider className='mb-30'/>
+
       <Typography paragraph>
         Метод «Помодоро» — это техника управления временем, разработанная студентом
         колледжа Франческо Чирилло в 1980-х годах. В основе техники, названной от

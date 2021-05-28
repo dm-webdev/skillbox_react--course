@@ -1,10 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles';
-// import { Header } from './reusable/components/Header/Header';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Menu from './reusable/components/Menu/Menu';
 import { Switch, Route, Redirect } from "react-router-dom";
-import navItems from './common/utils/navItems';
+import navItems from './common/staticData/navItems';
 import { Header } from './reusable/components/Header/Header';
+import { Modal } from './reusable/components/Modal/Modal';
+import { reactLocalStorage } from 'reactjs-localstorage';
+import initialSettings from './common/staticData/initialSettings';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,6 +26,18 @@ function App() {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  useEffect(() => {
+    const settings = reactLocalStorage.getObject('settings');
+    const isSendMessages = reactLocalStorage.get('isSendMessages');
+
+    if (!Object.keys(settings).length) {
+      reactLocalStorage.setObject('settings', initialSettings);
+    }
+    if (isSendMessages === undefined) {
+      reactLocalStorage.set('isSendMessages', true);
+    }
+  }, []);
 
   return (
     <div className="App">
@@ -50,6 +64,8 @@ function App() {
               <Redirect to='/main' />
             </Route>
           </Switch>
+
+          <Modal />
         </main>
       </div>
     </div>

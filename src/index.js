@@ -5,12 +5,15 @@ import App from './App';
 import { AppThemeProvider } from './common/theme/AppThemeProvider';
 import { CssBaseline } from '@material-ui/core';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { AppModalProvider } from './reusable/components/Modal/AppModalProvider';
 
 ReactDOM.render(
   <Router>
     <AppThemeProvider>
-      <CssBaseline />
-      <App />
+      <AppModalProvider>
+        <CssBaseline />
+        <App />
+      </AppModalProvider>
     </AppThemeProvider>
   </Router>,
   document.getElementById('root')

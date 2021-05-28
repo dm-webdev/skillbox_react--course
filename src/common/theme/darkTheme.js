@@ -31,6 +31,11 @@ export const darkTheme = {
       main: '#02a191',
       hover: '#03DAC5',
     },
+    secondaryBtn: {
+      text: '#ffffff',
+      main: '#DC3E22',
+      hover: '#B7280F',
+    },
     dotedBtn: {
       main: '#b2ff59',
       text: '#ea80fc',
@@ -38,6 +43,9 @@ export const darkTheme = {
     input: {
       main: '#404040',
       text: '#e7ff8c',
+    },
+    errorText: {
+      main: '#f44336',
     },
   },
 };

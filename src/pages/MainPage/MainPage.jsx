@@ -1,10 +1,10 @@
 import './mainPage.scss';
-import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Divider, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import withTitleUpdate from '../../reusable/hocs/withTitleUpdate';
-import { getNameOfDaysPeriod } from '../../common/utils/formatUtils';
+import { capitalizeFirstLetter, getNameOfDaysPeriod } from '../../common/utils/formatUtils';
 import { TodoList } from '../../reusable/components/TodoList/TodoList';
-//TODO перенести store
-import store from './../../data/staticStore';
+import { reactLocalStorage } from 'reactjs-localstorage';
+import { useState } from 'react';
 
 
 const useStyles = makeStyles(theme => ({
@@ -17,13 +17,16 @@ const useStyles = makeStyles(theme => ({
 
 function MainPage() {
   const classes = useStyles();
+  const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
 
   return (
     <div className='container flex-column'>
       <Typography variant='h1' color='secondary' className='heading'>
-        Привет, { store.settings.userName }!&ensp;
+        Привет, {capitalizeFirstLetter(settings.userName)}!&ensp;
         {getNameOfDaysPeriod()}, чтобы поработать!
       </Typography>
+
+      <Divider className='mb-30'/>
 
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>

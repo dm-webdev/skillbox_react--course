@@ -5,7 +5,7 @@ import equalizer from '../../../assets/img/equalizer.svg';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, IconButton, Toolbar } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { drawerWidth } from '../Menu/Menu';
+import { drawerWidth } from '../Menu/menuStyles';
 
 
 const useStyles = makeStyles(theme => ({

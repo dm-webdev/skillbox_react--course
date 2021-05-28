@@ -15,8 +15,8 @@ export function AppThemeProvider({ children }) {
   const [currentThemeName, setCurrentThemeName] = useLocalStorage('theme', 'lightTheme');
   const currentTheme = createMuiTheme(getTheme(currentThemeName));
   const contextValue = {
-    currentThemeName: currentThemeName,
-    setCurrentThemeName: setCurrentThemeName,
+    currentThemeName,
+    setCurrentThemeName,
   };
 
   return (

@@ -17,7 +17,7 @@ export const ToDoFormControl = withStyles(theme => ({
   root: {
     marginBottom: '25px',
     paddingBottom: '5px',
-    width: '80%',
+    width: '100%',
     border: 'none',
     boxShadow: 'none',
     backgroundColor: theme.palette.input.main,

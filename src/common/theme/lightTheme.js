@@ -26,6 +26,11 @@ export const lightTheme = {
       main: '#A8B64F',
       hover: '#899441',
     },
+    secondaryBtn: {
+      text: '#ffffff',
+      main: '#DC3E22',
+      hover: '#B7280F',
+    },
     dotedBtn: {
       main: '#C4C4C4',
       text: '#999999',
@@ -33,6 +38,9 @@ export const lightTheme = {
     input: {
       main: '#F4F4F4',
       text: '#999999',
+    },
+    errorText: {
+      main: '#f44336',
     },
   },
 };
