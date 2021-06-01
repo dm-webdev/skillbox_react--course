@@ -16,8 +16,13 @@ const modalVariants = {
     title: 'Удалить задачу?',
     description: null,
     needClose: false,
-  }
-
+  },
+  editByTaskList: {
+    type: 'edit',
+    title: 'Редактировать задачу?',
+    description: 'Введите новое название задачи.',
+    needClose: false,
+  },
 }
 
 export default modalVariants;

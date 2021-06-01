@@ -20,7 +20,7 @@ function MainPage() {
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
 
   return (
-    <div className='container flex-column'>
+    <section className='container flex-column'>
       <Typography variant='h1' color='secondary' className='heading'>
         Привет, {capitalizeFirstLetter(settings.userName)}!&ensp;
         {getNameOfDaysPeriod()}, чтобы поработать!
@@ -37,7 +37,7 @@ function MainPage() {
           <Paper className={classes.paper}>xs=12 sm=6</Paper>
         </Grid>
       </Grid>
-    </div>
+    </section>
   );
 }
 

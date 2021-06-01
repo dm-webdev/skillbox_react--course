@@ -16,7 +16,7 @@ import rulesList from '../../common/staticData/instructionList';
 function InfoPage() {
 
   return (
-    <div className='container'>
+    <section className='container'>
       <Typography variant='h1' color='secondary' className='heading'>
         Добро пожаловать в Pomodoro!
       </Typography>
@@ -64,7 +64,7 @@ function InfoPage() {
           https://www.dm-webdev.ru
         </Link>
       </Typography>
-    </div>
+    </section>
   );
 }
 

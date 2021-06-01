@@ -49,3 +49,16 @@ export function getAllTime(tasks, interval) {
 
   return `${hours} ${hoursDesc} ${min} ${minDesc}`;
 }
+
+export function getTimeLabelForAxe(min) {
+  if (!min) {
+    return null;
+  }
+
+  const minLabel = `${min % 60} мин`;
+  const hourLabel = min / 60 > 1 ? `${Math.floor(min / 60)} ч ` : null;
+  if (hourLabel) {
+    return hourLabel + minLabel
+  }
+  return minLabel;
+}

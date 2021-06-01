@@ -42,5 +42,11 @@ export const lightTheme = {
     errorText: {
       main: '#f44336',
     },
+    graph: {
+      bar: '#EE735D',
+      barHover: '#B7280F',
+      footerBar: '#ECECEC',
+      grid: '#333333',
+    },
   },
 };

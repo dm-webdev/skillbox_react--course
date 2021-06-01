@@ -143,7 +143,7 @@ function SettingPage() {
   ];
 
   return (
-    <div className='container flex-column'>
+    <section className='container flex-column'>
       <Typography variant='h1' color='secondary' className='heading'>
         Настрой свое приложение и вперед!
       </Typography>
@@ -181,12 +181,6 @@ function SettingPage() {
                   <SaveIcon className={classes.saveBtn}/>
                 </IconButton>
               </Grid>
-
-
-
-
-
-
 
               <Grid item xs={10}>
                 <ToDoFormControl className={classes.settingInput}>
@@ -310,7 +304,7 @@ function SettingPage() {
           </Grid>
         </Grid>
       </form>
-    </div>
+    </section>
   );
 }
 

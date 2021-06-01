@@ -47,5 +47,11 @@ export const darkTheme = {
     errorText: {
       main: '#f44336',
     },
+    graph: {
+      bar: '#ea80fc',
+      barHover: '#bd04dc',
+      footerBar: '#373737',
+      grid: '#81d4fa',
+    },
   },
 };

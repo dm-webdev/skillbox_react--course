@@ -1,5 +1,5 @@
-export function validateText(value, minLength, maxLength, isRequaried = true) {
-  if (!value && isRequaried) {
+export function validateText(value, minLength, maxLength, isRequired = true) {
+  if (!value && isRequired) {
     return 'Это поле обязательно';
   }
   const trimLen = value.trim().length;

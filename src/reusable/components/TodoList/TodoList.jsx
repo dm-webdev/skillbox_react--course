@@ -91,15 +91,7 @@ export function TodoList() {
     });
   };
 
-  // todoList menu
-
-  // function sortDict(dict) {
-  //   const sortedDict = {};
-  //   Object.values(dict).sort((a, b) => a.order - b.order).forEach((item, index) => {
-  //     sortedDict[item.id] = { ...item, order: index + 1 }
-  //   });
-  //   return sortedDict;
-  // }
+  // управление задачами
 
   function setTaskUp(id) {
     if (todos[id].order !== 1) {
@@ -129,6 +121,13 @@ export function TodoList() {
     const sortedTasks = sortDictAndRemove(reactLocalStorage.getObject('todos'), id);
     setTodos(sortedTasks);
     reactLocalStorage.setObject('todos', sortedTasks);
+  }
+
+  function editTask(id, value) {
+    const editedTaskList = reactLocalStorage.getObject('todos');
+    editedTaskList[id].title = value;
+    setTodos(editedTaskList);
+    reactLocalStorage.setObject('todos', editedTaskList);
   }
 
   return (
@@ -180,8 +179,8 @@ export function TodoList() {
               <ToDoSelect
                 input={<ToDoSelectInput disableUnderline={true} />}
                 value={newTask.category || ''}
-                onChange={(ev) => handleChangeInput(ev, 'category', validateText)}
-                onBlur={(ev) => handleTouched(ev, 'category')}
+                onChange={ev => handleChangeInput(ev, 'category', validateText)}
+                onBlur={ev => handleTouched(ev, 'category')}
               >
                 {
                   settings.categories.map((item, index) => (
@@ -240,14 +239,20 @@ export function TodoList() {
                     </ListItemIcon>
                   }
 
-                  <TodoPopover item={item} setTaskUp={setTaskUp} setTaskDown={setTaskDown} removeTask={removeTask} />
+                  <TodoPopover
+                    item={item}
+                    setTaskUp={setTaskUp}
+                    setTaskDown={setTaskDown}
+                    removeTask={removeTask}
+                    editTask={editTask}
+                  />
 
                 </ListItem>
               ))}
               <ListItem>
                 <TodoItemText
                   primary={`Количество помидор: ${Object.values(todos).reduce((sum, current) => sum + +current.tomatoCount, 0)} шт`}
-                  secondary={`Потребуется: ${getAllTime(todos, 25)}`}
+                  secondary={`Потребуется: ${getAllTime(todos, settings.durationOfPomodoro)}`}
                 />
               </ListItem>
             </> :

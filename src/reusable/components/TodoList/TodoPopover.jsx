@@ -8,9 +8,10 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import todoListStyles from './todoListStyles';
 import { AppModalContext } from '../Modal/AppModalProvider';
 import modalVariants from '../Modal/modalVariants';
+import PropTypes from 'prop-types';
 
 
-export function TodoPopover({ item, setTaskUp, setTaskDown, removeTask }) {
+export function TodoPopover({ item, setTaskUp, setTaskDown, removeTask, editTask }) {
   const { isModalOpen, modalProps, setModalProps, setModalOpen } = useContext(AppModalContext);
   const classes = todoListStyles();
   const [anchorForPopover, setAnchorForPopover] = useState(null);
@@ -27,6 +28,13 @@ export function TodoPopover({ item, setTaskUp, setTaskDown, removeTask }) {
     const  modalProps = modalVariants.deleteByTaskList;
     setModalOpen(!isModalOpen);
     setModalProps({ ...modalProps, id, removeTask });
+  }
+
+  function openModalOnEdit(ev, id, itemTitle) {
+    ev.preventDefault();
+    const  modalProps = modalVariants.editByTaskList;
+    setModalOpen(!isModalOpen);
+    setModalProps({ ...modalProps, id, itemTitle, editTask });
   }
 
   return (
@@ -56,7 +64,8 @@ export function TodoPopover({ item, setTaskUp, setTaskDown, removeTask }) {
         <List key={item.id}>
           <ListItem
             button
-            onClick={()=> {
+            onClick={ev => {
+              ev.preventDefault();
               setTaskUp(item.id);
               handleClosePopover();
             }}
@@ -69,7 +78,8 @@ export function TodoPopover({ item, setTaskUp, setTaskDown, removeTask }) {
 
           <ListItem
             button
-            onClick={()=> {
+            onClick={ev => {
+              ev.preventDefault();
               setTaskDown(item.id);
               handleClosePopover();
             }}
@@ -83,7 +93,7 @@ export function TodoPopover({ item, setTaskUp, setTaskDown, removeTask }) {
           <ListItem
             button
             onClick={ev => {
-              openModalOnDelete(ev, item.id);
+              openModalOnEdit(ev, item.id, item.title);
               handleClosePopover();
             }}
           >
@@ -109,4 +119,12 @@ export function TodoPopover({ item, setTaskUp, setTaskDown, removeTask }) {
       </Popover>
     </>
   );
+}
+
+TodoPopover.propTypes = {
+  item: PropTypes.object.isRequired,
+  setTaskUp: PropTypes.func.isRequired,
+  setTaskDown: PropTypes.func.isRequired,
+  removeTask: PropTypes.func.isRequired,
+  editTask: PropTypes.func.isRequired,
 }
