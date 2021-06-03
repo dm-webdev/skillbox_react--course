@@ -1,17 +1,13 @@
 import {
   AccordionDetails,
   Button,
-  Dialog, DialogActions, DialogContentText,
-  DialogTitle,
   FormHelperText,
   Grid,
-  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   MenuItem,
-  Popover, TextField
 } from '@material-ui/core';
 import tomato from '../../../assets/img/tomato.svg';
 import { ToDoFormControl, ToDoInput, ToDoLabel } from '../../customMUI/customInput';
@@ -19,18 +15,10 @@ import makeBtnStyles from '../../customMUI/makeBtnStyles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Accordion, AccordionSummary } from '../../customMUI/customAccordion';
 import { useEffect, useState } from 'react';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
-import RemoveCircleOutlineRoundedIcon from '@material-ui/icons/RemoveCircleOutlineRounded';
-import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { TodoItemText } from '../../customMUI/todoItemText';
-import { ToDoSelect, ToDoSelectInput, ToDoSelectLabel } from '../../customMUI/customSelect';
+import { MenuSelectProps, ToDoSelect, ToDoSelectInput, ToDoSelectLabel } from '../../customMUI/customSelect';
 import instructionList from '../../../common/staticData/instructionList';
 import todoListStyles from './todoListStyles';
-//TODO перенести store
-import store from '../../../data/staticStore';
-import useLocalStorage from 'react-use-localstorage';
 import { nanoid } from 'nanoid';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import { getAllTime } from '../../../common/utils/formatUtils';
@@ -38,9 +26,10 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { validateNumber, validateText } from '../../../common/utils/valitatorUtils';
 import { TodoPopover } from './TodoPopover';
 import { sortDict, sortDictAndRemove } from '../../../common/utils/taskHelpers';
+import PropTypes from 'prop-types';
 
 
-export function TodoList() {
+export function TodoList({ setCurrentTask }) {
   const classes = todoListStyles();
   const btnClasses = makeBtnStyles();
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
@@ -130,6 +119,12 @@ export function TodoList() {
     reactLocalStorage.setObject('todos', editedTaskList);
   }
 
+  useEffect(() => {
+    if (Object.keys(todos)?.length) {
+      setCurrentTask(Object.values(todos).sort((a, b) => a.order - b.order)[0])
+    }
+  }, [todos])
+
   return (
     <>
       <Accordion>
@@ -181,6 +176,7 @@ export function TodoList() {
                 value={newTask.category || ''}
                 onChange={ev => handleChangeInput(ev, 'category', validateText)}
                 onBlur={ev => handleTouched(ev, 'category')}
+                MenuProps={MenuSelectProps}
               >
                 {
                   settings.categories.map((item, index) => (
@@ -265,4 +261,12 @@ export function TodoList() {
       </List>
     </>
   );
+}
+
+TodoList.propTypes = {
+  // currentTask: PropTypes.array,
+  setCurrentTask: PropTypes.func.isRequired,
+  // setTaskDown: PropTypes.func.isRequired,
+  // removeTask: PropTypes.func.isRequired,
+  // editTask: PropTypes.func.isRequired,
 }

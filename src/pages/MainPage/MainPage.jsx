@@ -5,6 +5,7 @@ import { capitalizeFirstLetter, getNameOfDaysPeriod } from '../../common/utils/f
 import { TodoList } from '../../reusable/components/TodoList/TodoList';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import { useState } from 'react';
+import { PomodoroTimer } from '../../reusable/components/PomodoroTimer/PomodoroTimer';
 
 
 const useStyles = makeStyles(theme => ({
@@ -18,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 function MainPage() {
   const classes = useStyles();
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
+  const [currentTask, setCurrentTask] = useState([])
 
   return (
     <section className='container flex-column'>
@@ -30,11 +32,11 @@ function MainPage() {
 
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
-          <TodoList />
+          <TodoList setCurrentTask={setCurrentTask} />
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Paper className={classes.paper}>xs=12 sm=6</Paper>
+          <PomodoroTimer currentTask={currentTask} />
         </Grid>
       </Grid>
     </section>

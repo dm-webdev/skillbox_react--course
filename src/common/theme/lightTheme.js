@@ -47,6 +47,23 @@ export const lightTheme = {
       barHover: '#B7280F',
       footerBar: '#ECECEC',
       grid: '#333333',
+      tick: '#999999',
+    },
+    statistics: {
+      focusLight: '#FFDDA9',
+      focusDark: '#FFAE35',
+      pauseLight: '#DFDCFE',
+      pauseDark: '#9C97D7',
+      stopLight: '#C5F1FF',
+      stopDark: '#7FC2D7',
+      emptyLight: '#F4F4F4',
+      emptyDark: '#C4C4C4',
+      countText: '#F4F4F4',
+    },
+    timer: {
+      headerBarMain: '#C4C4C4',
+      headerBarText: '#FFFFFF',
+      remark: '#999999',
     },
   },
 };

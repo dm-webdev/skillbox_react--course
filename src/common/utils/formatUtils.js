@@ -22,21 +22,22 @@ export function getNameOfDaysPeriod() {
    return 'Хоpошая ночь';
 }
 
-export function getAllTime(tasks, interval) {
-  function declOfNum(time, options) {
-    const numByHundred = Math.abs(time) % 100;
-    const numByTen = numByHundred % 10;
-    if (numByHundred > 10 && numByHundred < 20) {
-      return options[2];
-    }
-    if (numByTen > 1 && numByTen < 5) {
-      return options[1];
-    }
-    if (numByTen === 1) {
-      return options[0];
-    }
+export function declOfNum(time, options) {
+  const numByHundred = Math.abs(time) % 100;
+  const numByTen = numByHundred % 10;
+  if (numByHundred > 10 && numByHundred < 20) {
     return options[2];
   }
+  if (numByTen > 1 && numByTen < 5) {
+    return options[1];
+  }
+  if (numByTen === 1) {
+    return options[0];
+  }
+  return options[2];
+}
+
+export function getAllTime(tasks, interval) {
   if (!Object.values(tasks).length) {
     return 0;
   }
@@ -55,10 +56,38 @@ export function getTimeLabelForAxe(min) {
     return null;
   }
 
-  const minLabel = `${min % 60} мин`;
-  const hourLabel = min / 60 > 1 ? `${Math.floor(min / 60)} ч ` : null;
+  const minLabel = `${Math.floor(min % 60)} мин`;
+  const hourLabel = min / 60 >= 1 ? `${Math.floor(min / 60)} ч ` : null;
   if (hourLabel) {
     return hourLabel + minLabel
   }
   return minLabel;
+}
+
+export function getTimeLabelForPause(min) {
+  if (!min) {
+    return '0 м';
+  }
+
+  const minLabel = `${Math.floor(min % 60)}м`;
+  const hourLabel = min / 60 >= 1 ? `${Math.floor(min / 60)}ч ` : null;
+  if (hourLabel) {
+    return hourLabel + minLabel
+  }
+  return minLabel;
+}
+
+export function getHumanTimeInterval(interval) {
+  if (!interval) {
+    return 0;
+  }
+
+  const hours = Math.floor(interval / 60);
+  const min = Math.trunc(interval % 60);
+  const hoursDesc = declOfNum(hours, ['часов', 'часов', 'часов']);
+  const minDesc = declOfNum(min, ['минут', 'минут', 'минут']);
+  if (hours === 0) {
+    return `${min} ${minDesc}`;
+  }
+  return `${hours} ${hoursDesc} ${min} ${minDesc}`;
 }

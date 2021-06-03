@@ -52,6 +52,23 @@ export const darkTheme = {
       barHover: '#bd04dc',
       footerBar: '#373737',
       grid: '#81d4fa',
+      tick: '#02a191',
     },
+    statistics: {
+      focusLight: '#c77902',
+      focusDark: '#eaa031',
+      pauseLight: '#1504bb',
+      pauseDark: '#716bbf',
+      stopLight: '#016d90',
+      stopDark: '#56aac4',
+      emptyLight: '#404040',
+      emptyDark: '#a8a6a6',
+      countText: '#016d90',
+    },
+    timer: {
+      headerBarMain: '#1b1b1b',
+      headerBarText: '#a8a6a6',
+      remark: '#a8a6a6',
+    }
   },
 };

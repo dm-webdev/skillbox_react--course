@@ -1,122 +1,102 @@
 import {
-  Divider, FormHelperText, Grid, makeStyles, MenuItem, Paper,
-  Typography, useTheme
+  Divider,
+  Grid,
+  MenuItem,
+  Paper,
+  Typography,
+  useTheme,
 } from '@material-ui/core';
 import withTitleUpdate from '../../reusable/hocs/withTitleUpdate';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { reactLocalStorage } from 'reactjs-localstorage';
-import { capitalizeFirstLetter, getNameOfDaysPeriod, getTimeLabelForAxe } from '../../common/utils/formatUtils';
-import { ToDoFormControl } from '../../reusable/customMUI/customInput';
-import { ToDoSelect, ToDoSelectInput, ToDoSelectLabel } from '../../reusable/customMUI/customSelect';
-import { validateText } from '../../common/utils/valitatorUtils';
-import ScheduleIcon from '@material-ui/icons/Schedule'; // часы
-import BlockRoundedIcon from '@material-ui/icons/BlockRounded'; // премя на паузе
-import FlareRoundedIcon from '@material-ui/icons/FlareRounded'; // почти фокус
 import {
-  XYPlot,
-  XAxis,
-  YAxis,
-  VerticalGridLines,
-  HorizontalGridLines,
-  VerticalBarSeries,
-  VerticalBarSeriesCanvas,
-  LabelSeries
-} from 'react-vis';
-import Button from '@material-ui/core/Button';
-import BarSeries from 'react-vis/es/plot/series/bar-series';
+  capitalizeFirstLetter,
+  declOfNum,
+  getHumanTimeInterval,
+  getTimeLabelForAxe,
+  getTimeLabelForPause,
+} from '../../common/utils/formatUtils';
+import { ToDoFormControl } from '../../reusable/customMUI/customInput';
+import {
+  MenuSelectProps,
+  ToDoSelect,
+  ToDoSelectInput,
+} from '../../reusable/customMUI/customSelect';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import BlockRoundedIcon from '@material-ui/icons/BlockRounded';
+import FlareRoundedIcon from '@material-ui/icons/FlareRounded';
 import { Background, VictoryAxis, VictoryBar, VictoryChart, VictoryTheme } from 'victory';
+import { ReactComponent as HappyTomato } from '../../assets/img/happy-tomato.svg';
+import { ReactComponent as Tomato } from '../../assets/img/tomato.svg';
+import { DAYS_LIST, DEFAULT_STATISTICS } from '../../common/utils/constants';
+import { axisAxeStyle, axisStyle, useStatisticsPageStyles } from './statisticsPageStyles';
 
-
-
-
-const useStyles = makeStyles(theme => ({
-  subheading: {
-    margin: 0,
-    fontSize: '1.2rem',
-    fontWeight: '600',
-  },
-  selectOptions: {
-    color: theme.palette.input.text,
-  },
-  toRight: {
-    margin: '0 0 0 auto',
-  },
-  weekSelect: {
-    margin: 0,
-  },
-
-
-
-
-  paper: {
-    padding: theme.spacing(0),
-    textAlign: 'center',
-    backgroundColor: theme.palette.input.main,
-    borderRadius: 0,
-    // height: '100%',
-  },
-  graph: {
-    // order: 0,
-    // display: 'flex',
-    // height: '100%',
-//     font-size: 1.2rem;
-// font-weight: 600;
-  },
-}));
 
 function StatisticsPage() {
   const theme = useTheme();
-  const myData = [
-    { numberOfDay: 1, timerUsageTime: 50 },
-    { numberOfDay: 2, timerUsageTime: 99 },
-    { numberOfDay: 3, timerUsageTime: 150 },
-    { numberOfDay: 4, timerUsageTime: 10 },
-    { numberOfDay: 5, timerUsageTime: 210 },
-    { numberOfDay: 6, timerUsageTime: 45 },
-    { numberOfDay: 7, timerUsageTime: 90 },
-  ];
+  const classes = useStatisticsPageStyles();
 
-  const victoryBarStyle = {
-    data: {
-      fill: theme.palette.graph.bar,
-    }
+  const statisticsData = {
+    12: [
+      { numberOfDay: 3, timerUsageTime: 150, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 4, timerUsageTime: 10, finishedTomatoesTime: 20, pauseTime: 60, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 5, timerUsageTime: 210, finishedTomatoesTime: 20, pauseTime: 90, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 6, timerUsageTime: 45, finishedTomatoesTime: 20, pauseTime: 120, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 1, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 150, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 2, timerUsageTime: 99, finishedTomatoesTime: 20, pauseTime: 180, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 7, timerUsageTime: 90, finishedTomatoesTime: 20, pauseTime: 210, stopCount: 20, pomodoroCount: 3 },
+    ],
+    10: [
+      { numberOfDay: 1, timerUsageTime: 10, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 2, timerUsageTime: 20, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 3, timerUsageTime: 30, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 4, timerUsageTime: 40, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 5, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 6, timerUsageTime: 60, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 7, timerUsageTime: 70, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+    ],
+    13: [
+      { numberOfDay: 1, timerUsageTime: 70, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 2, timerUsageTime: 80, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 3, timerUsageTime: 60, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 4, timerUsageTime: 30, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 5, timerUsageTime: 200, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 6, timerUsageTime: 400, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 7, timerUsageTime: 10, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+    ],
+    14: [
+      { numberOfDay: 4, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 1, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 2, timerUsageTime: 15, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+      { numberOfDay: 7, timerUsageTime: 90, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+    ],
+    15: [
+      { numberOfDay: 3, timerUsageTime: 150, finishedTomatoesTime: 10, pauseTime: 20, stopCount: 50, pomodoroCount: 10 },
+      { numberOfDay: 4, timerUsageTime: 10, finishedTomatoesTime: 0, pauseTime: 30, stopCount: 20, pomodoroCount: 1 },
+      { numberOfDay: 5, timerUsageTime: 35, finishedTomatoesTime: 20, pauseTime: 0, stopCount: 20, pomodoroCount: 2 },
+      { numberOfDay: 6, timerUsageTime: 150, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 0, pomodoroCount: 3 },
+      { numberOfDay: 7, timerUsageTime: 200, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 0 },
+    ],
   };
 
-  // const victoryBarHoverStyle = {
-  //   data: {
-  //     fill: theme.palette.graph.barHover,
-  //   }
-  // };
+  const presentData = Object.keys(statisticsData).length ? statisticsData : DEFAULT_STATISTICS;
 
-  // const graphStyle = {
-  //   histogram: {
-  //     style: {
-  //       fill: 'red',
-  //     }
-  //   }
-  // }
-
-  // const labelData = greenData.map((d, idx) => ({
-  //   x: d.x,
-  //   y: Math.max(greenData[idx].y, blueData[idx].y)
-  // }));
-  const weeks = ['Эта неделя', 'Прошедшая неделя', '2 недели назад'];
-
-  const classes = useStyles();
+  const weeks = Object.keys(presentData).sort((a, b) => Number(b) - Number(a));
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
-  const [currentWeek, setCurrentWeek] = useState(weeks[0]);
-  // const [currentStyle, setCurrentStyle] = useState('')
+  const [currentWeekNumber, setCurrentWeekNumber] = useState(weeks[0]);
+  const [currentWeek, setCurrentWeek] = useState(presentData[currentWeekNumber]);
+  const [currentDay, setCurrentDay] = useState(currentWeek.sort((a, b) => a.numberOfDay - b.numberOfDay)[0]);
+
   useEffect(()=>{
-    console.log(classes);
-    console.log(VictoryTheme.material)
-  },[])
+    console.log(currentDay)
+  }, [currentWeek])
 
   return (
     <section className='container flex-column'>
       <Typography variant='h1' color='secondary' className='heading'>
         {capitalizeFirstLetter(settings.userName)}, твой прогресс в цифрах!
       </Typography>
-      <Divider className='mb-30'/>
+      <Divider className='mb-30' />
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -131,12 +111,19 @@ function StatisticsPage() {
               <ToDoFormControl className='m-0'>
                 <ToDoSelect
                   input={<ToDoSelectInput disableUnderline={true} />}
-                  value={currentWeek}
-                  onChange={ev => setCurrentWeek(ev.target.value)}
+                  value={currentWeekNumber}
+                  onChange={ev => {
+                    setCurrentWeekNumber(ev.target.value);
+                    setCurrentWeek(statisticsData[ev.target.value]);
+                    setCurrentDay(statisticsData[ev.target.value].sort((a, b) => a.numberOfDay - b.numberOfDay)[0])
+                  }}
+                  MenuProps={MenuSelectProps}
                 >
                   {
                     weeks.map((item, index) => (
-                      <MenuItem className={classes.selectOptions} value={item} key={index}>{item}</MenuItem>
+                      <MenuItem className={classes.selectOptions} value={item} key={index}>
+                        {`Календарная неделя - ${item}`}
+                      </MenuItem>
                     ))
                   }
                 </ToDoSelect>
@@ -146,156 +133,237 @@ function StatisticsPage() {
         </Grid>
 
         <Grid item xs={12} sm={4}>
-          <Grid container spacing={2}>
-            <Grid item xs={6} sm={12}>
-              <Paper className={classes.paper}>Активность</Paper>
+          <Grid
+            container
+            style={{height: '100%'}}
+            direction='row'
+            justify='space-between'
+          >
+            <Grid item xs={6} sm={12} className={classes.summary}>
+              <Typography variant='h2' className={classes.blockHeading}>
+                {DAYS_LIST[currentDay.numberOfDay - 1]}:
+              </Typography>
+              <br/>
+              <Typography paragraph className={classes.summaryText}>
+                {!currentDay.timerUsageTime
+                  ? 'Нет данных'
+                  : (
+                    <>
+                      Вы работали над задачами в течение
+                      <span className={classes.timeText}> {getHumanTimeInterval(currentDay.timerUsageTime)}</span>
+                    </>)}
+              </Typography>
             </Grid>
 
-            <Grid item xs={6} sm={12}>
-              <Paper className={classes.paper}>Помидоры</Paper>
+            <Grid item xs={5} sm={12} className={classes.tomatoSummary}>
+              {
+                !currentDay.pomodoroCount
+                  ? <HappyTomato className={classes.happyTomatoIcon} />
+                  : <>
+                    <Typography paragraph className={classes.tomatoCountWrap}>
+                      <Tomato className={classes.tomatoCountIcon} />
+                      <span className={classes.tomatoCountDesk}>&nbsp;x&nbsp;</span>
+                      <span className={classes.tomatoCountDesk}>{currentDay.pomodoroCount}</span>
+                    </Typography>
+
+                    <Typography paragraph className={classes.tomatoCountBar}>
+                      {currentDay.pomodoroCount + ' ' + declOfNum(
+                        currentDay.pomodoroCount, ['помидор', 'помидара', 'помидоров']
+                      )}
+                    </Typography>
+                  </>
+              }
             </Grid>
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sm={8} className={classes.graph}>
-          <Paper className={classes.paper}>
-            {/*ГРАФИК*/}
-            {/*<div>*/}
-            {/*  <XYPlot*/}
-            {/*    xType="ordinal"*/}
-            {/*    width={300}*/}
-            {/*    height={300}*/}
-            {/*    xDistance={100}*/}
-            {/*  >*/}
-            {/*    <VerticalGridLines style={{ stroke: 'red' }} />*/}
-            {/*    <HorizontalGridLines style={{ stroke: 'red' }} />*/}
-            {/*    <XAxis style={{ stroke: 'blue' }} />*/}
-            {/*    <YAxis style={{ stroke: 'blue' }} />*/}
-            {/*    <VerticalBarSeries*/}
-            {/*      data={ myData }*/}
-            {/*      color='red'*/}
-            {/*      // onSeriesClick={(event)=>{*/}
-            {/*      // console.log(event.target)*/}
-            {/*      // }}*/}
-            {/*      onValueClick={datapoint => {*/}
-            {/*        console.log(datapoint)*/}
-            {/*      }}*/}
-            {/*    />*/}
-            {/*    /!*<BarSeries data={greenData} />*!/*/}
-            {/*    /!*<BarSeries data={blueData} />*!/*/}
-            {/*    /!*<LabelSeries data={labelData} getLabel={d => d.x} />*!/*/}
-            {/*  </XYPlot>*/}
-            {/*</div>*/}
+        <Grid item xs={12} sm={8}>
+          <Paper className={classes.paperGraph}>
+            <VictoryChart
+              domainPadding={{x: [17, 17], y: 10}}
+              theme={ VictoryTheme.material }
+              height={200}
+              padding={{top: 0, bottom: 25, left: 5, right: 45}}
+              style={{
+                background: { fill: theme.palette.graph.footerBar }
+              }}
+              backgroundComponent={<Background y={175} height={60} x={-2} width={400} />}
+            >
+              <VictoryAxis
+                tickValues={[1, 2, 3, 4, 5, 6, 7]}
+                tickFormat={['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']}
+                style={axisStyle(currentWeek, theme, currentDay)}
+              />
 
-            {/*<div>*/}
-              <VictoryChart
-                domainPadding={{x: [18, 18], y: 10}}
-                theme={ VictoryTheme.material }
-                height={200}
-                padding={{top: 0, bottom: 25, left: 5, right: 45}}
-                style={{
-                  background: { fill: theme.palette.graph.footerBar }
+              <VictoryAxis
+                dependentAxis
+                tickFormat={x => getTimeLabelForAxe(x)}
+                offsetX={360}
+                padding={{ top: 10, bottom: 10, left: 10, right: -10 }}
+                style={axisAxeStyle(theme)}
+                animate={{
+                  easing: 'linear',
+                  duration: 500,
+                  onLoad: { duration: 500 }
                 }}
-                backgroundComponent={<Background y={175} height={60} x={-2} width={400}/>}
-              >
-                <VictoryAxis
-                  tickValues={[1, 2, 3, 4, 5, 6, 7]}
-                  // tickValues={[1, 2, 3, 4]}
-                  tickFormat={['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']}
-                  // padding={{ top: 10, bottom: 10, left: 10, right: -10 }}
+              />
+
+              <VictoryBar
+                data={currentWeek}
+                x='numberOfDay'
+                y='timerUsageTime'
+                style={{
+                  data: {
+                    fill: ({ datum }) => datum.numberOfDay === currentDay.numberOfDay
+                      ? theme.palette.graph.barHover
+                      : theme.palette.graph.bar,
+                  },
+                }}
+                animate={{
+                  easing: 'linear',
+                  duration: 500,
+                  onLoad: { duration: 500 }
+                }}
+                barWidth={35}
+                events={[{
+                  target: 'data',
+                  eventHandlers: {
+                    onClick: (target) => {
+                      return [{
+                        mutation: props => {
+                          setCurrentDay(props.datum);
+                          return {
+                            style: {
+                              fill: theme.palette.graph.barHover,
+                              cursor: 'pointer',
+                            }
+                          };
+                        }
+                      }];
+                    },
+                    onMouseOver: () => {
+                      return [{
+                        mutation: () => {
+                          return {
+                            style: {
+                              fill: theme.palette.graph.barHover,
+                              cursor: 'pointer',
+                            }
+                          };
+                        }
+                      }];
+                    },
+                    onMouseLeave: () => {
+                      return [{
+                        mutation: () => {
+                          return {
+                            fill: ({ datum }) => datum.numberOfDay !== currentDay.numberOfDay
+                              ? theme.palette.graph.barHover
+                              : theme.palette.graph.bar,
+                          };
+                        }
+                      }];
+                    },
+                  }
+                }]}
+              />
+            </VictoryChart>
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <Grid
+                  container
+                  className={classes.infoBlock}
                   style={{
-                    axis: {stroke: 'inherit'},
-                    grid: {stroke: 'inherit' },
-                    ticks: {stroke: 'inherit'},
-                    tickLabels: {fontSize: 9, padding: 0, fill: theme.palette.text.primary}
+                    backgroundColor: !currentDay.finishedTomatoesTime
+                      ? theme.palette.statistics.emptyLight
+                      : theme.palette.statistics.focusLight,
                   }}
-                />
+                >
+                  <Grid item xs={7} className={classes.blockDesk}>
+                    <Typography variant='h2' className={classes.blockHeading}>Фокус</Typography>
+                    <Typography paragraph className={classes.blockValue} >
+                      {`${Math.floor(
+                        currentDay.timerUsageTime > 0
+                        ? currentDay.finishedTomatoesTime / currentDay.timerUsageTime * 100
+                        : 0
+                      )}%` }
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={5} className={classes.blockIconWrap}>
+                    <FlareRoundedIcon
+                      className={classes.focusIcon}
+                      style={{
+                        color:!currentDay.finishedTomatoesTime
+                          ? theme.palette.statistics.emptyDark
+                          : theme.palette.statistics.focusDark,
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
 
-                <VictoryAxis
-                  // invertAxis={true}
-                  dependentAxis
-                  tickFormat={x => getTimeLabelForAxe(x)}
-                  offsetX={360}
-                  padding={{ top: 10, bottom: 10, left: 10, right: -10 }}
+              <Grid item xs={12} sm={4}>
+                <Grid
+                  container
+                  className={classes.infoBlock}
                   style={{
-                    axis: {stroke: 'inherit'},
-                    grid: {stroke: theme.palette.graph.grid, strokeDasharray: 0 },
-                    ticks: {stroke: 'inherit', size: 8},
-                    tickLabels: {fontSize: 8, padding: 5, fill: theme.palette.text.primary}
+                    backgroundColor: !currentDay.pauseTime
+                      ? theme.palette.statistics.emptyLight
+                      : theme.palette.statistics.pauseLight,
                   }}
-                />
+                >
+                  <Grid item xs={7} className={classes.blockDesk}>
+                    <Typography variant='h2' className={classes.blockHeading}>Время на паузе</Typography>
+                    <Typography paragraph className={classes.blockValue}>
+                      {getTimeLabelForPause(currentDay.pauseTime)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={5} className={classes.blockIconWrap}>
+                    <ScheduleIcon
+                      className={classes.focusIcon}
+                      style={{
+                        color: !currentDay.pauseTime
+                          ? theme.palette.statistics.emptyDark
+                          : theme.palette.statistics.pauseDark,
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
 
-                <VictoryBar
-                  data={myData}
-                  x='numberOfDay'
-                  y='timerUsageTime'
-                  style={victoryBarStyle}
-                  // height={250}
-                  animate={{
-                    duration: 1500,
-                    onLoad: { duration: 800 }
+              <Grid item xs={12} sm={4}>
+                <Grid
+                  container
+                  className={classes.infoBlock}
+                  style={{
+                    backgroundColor: !currentDay.stopCount
+                      ? theme.palette.statistics.emptyLight
+                      : theme.palette.statistics.stopLight,
                   }}
-                  barRatio={1.1}
-                  events={[{
-                    target: "data",
-                    eventHandlers: {
-                      onClick: (target) => {
-                        return [
-                          {
-                            mutation: (props) => {
-                              console.log(props.datum)
-                              const fill = props.style && props.style.fill;
-                              return fill === "black" ? null : { style: { fill:  theme.palette.graph.footerBar } };
-                            }
-                          }
-                        ];
-                      },
-                      onMouseOver: () => {
-                        return [
-                          {
-                            mutation: (props) => {
-                              console.log(props)
-                              return { style: { fill: theme.palette.graph.barHover } };
-                            }
-                          }
-                        ];
-                      },
-                      onMouseLeave: () => {
-                        return [
-                          {
-                            mutation: () => {
-                              return { style: { fill: theme.palette.graph.bar } };
-                            }
-                          }
-                        ];
-                      },
-                    }
-                  }]}
-                />
-              </VictoryChart>
-            {/*</div>*/}
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={4}>
-          <Paper className={classes.paper}>
-            <span>Фокус</span>
-            <span>35%</span>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={4}>
-          <Paper className={classes.paper}>
-            <span>Время на паузе</span>
-            <span>9м</span>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={4}>
-          <Paper className={classes.paper}>
-            <span>Остановки</span>
-            <span>3</span>
-          </Paper>
+                >
+                <Grid item xs={7} className={classes.blockDesk}>
+                  <Typography variant='h2' className={classes.blockHeading}>Остановки</Typography>
+                  <Typography paragraph className={classes.blockValue}>
+                    {currentDay.stopCount}
+                  </Typography>
+                </Grid>
+                  <Grid item xs={5} className={classes.blockIconWrap}>
+                    <BlockRoundedIcon
+                      className={classes.focusIcon}
+                      style={{
+                        color: !currentDay.stopCount
+                          ? theme.palette.statistics.emptyDark
+                          : theme.palette.statistics.stopDark
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </section>

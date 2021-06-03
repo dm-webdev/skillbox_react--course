@@ -25,3 +25,12 @@ export const ToDoSelectLabel = withStyles(theme => ({
     padding: '0 15px',
   },
 }))(InputLabel);
+
+
+export const MenuSelectProps = {
+  PaperProps: {
+    style: {
+      maxHeight: '150px',
+    },
+  },
+};
