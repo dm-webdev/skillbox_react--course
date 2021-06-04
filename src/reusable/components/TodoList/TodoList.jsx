@@ -2,12 +2,15 @@ import {
   AccordionDetails,
   Button,
   FormHelperText,
-  Grid,
+  Grid, IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   MenuItem,
+  Tab,
+  Tabs,
+  useTheme,
 } from '@material-ui/core';
 import tomato from '../../../assets/img/tomato.svg';
 import { ToDoFormControl, ToDoInput, ToDoLabel } from '../../customMUI/customInput';
@@ -27,18 +30,25 @@ import { validateNumber, validateText } from '../../../common/utils/valitatorUti
 import { TodoPopover } from './TodoPopover';
 import { sortDict, sortDictAndRemove } from '../../../common/utils/taskHelpers';
 import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import { a11yProps, TabPanel } from '../../customMUI/customTabs';
 
 
 export function TodoList({ setCurrentTask }) {
   const classes = todoListStyles();
   const btnClasses = makeBtnStyles();
+  const theme = useTheme();
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
+  const [tabsKey, setTabsKey] = useState(0);
 
   // todoList
   const [todos, setTodos] = useState(reactLocalStorage.getObject('todos') || {});
   const [newTask, setNewTask] = useState({});
   const [formTouched, setFormTouched] = useState({});
   const [formErrors, setFormErrors] = useState({});
+  const [tasksInWork, setTaskInWork] = useState([]);
+  const [tasksCompleted, setTaskCompleted] = useState([]);
 
   const handleChangeInput = (ev, key, validation, min = 5, max = 50) => {
     setNewTask({ ...newTask, [key]: ev.target.value });
@@ -55,7 +65,7 @@ export function TodoList({ setCurrentTask }) {
     const errors = {
       title: validateText(newTask?.title, 5, 50),
       category: validateText(newTask?.category, 5, 50),
-      tomatoCount: validateNumber(newTask?.tomatoCount, 1, 15),
+      tomatoCount: validateNumber(newTask?.tomatoCount, 1, 14),
     };
 
     if (Object.values(errors).reduce((sum, item) => sum + item, 0) < 0) {
@@ -121,7 +131,10 @@ export function TodoList({ setCurrentTask }) {
 
   useEffect(() => {
     if (Object.keys(todos)?.length) {
-      setCurrentTask(Object.values(todos).sort((a, b) => a.order - b.order)[0])
+      const workList = Object.values(todos).filter(item => item.done === false).sort((a, b) => a.order - b.order);
+      setCurrentTask(workList[0]);
+      setTaskInWork(workList);
+      setTaskCompleted(Object.values(todos).filter(item => item.done === true).sort((a, b) => a.order - b.order))
     }
   }, [todos])
 
@@ -214,51 +227,102 @@ export function TodoList({ setCurrentTask }) {
         </Button>
       </form>
 
-      <List className={classes.todoList}>
-        {
-          !!Object.values(todos).length ?
-            <>
-              {Object.values(todos).sort((a, b) => a.order - b.order).map((item, index) => (
-                <ListItem key={item.id}>
-                  <ListItemIcon style={{minWidth: '2rem'}}>
-                    <span className={classes.todoListDecoration}>{index + 1}</span>
-                  </ListItemIcon>
+      <div>
+        <Tabs
+          value={tabsKey}
+          onChange={(ev, value)=> setTabsKey(value)}
+          indicatorColor='secondary'
+          textColor='inherit'
+          variant='fullWidth'
+        >
+          <Tab label='В работе' {...a11yProps(0)} />
+          <Tab label='Выполнены' {...a11yProps(1)} />
+        </Tabs>
 
-                  <TodoItemText
-                    primary={item.title}
-                    secondary={`Категория: ${item.category}`}
-                  />
-                  {
-                    item.done &&
-                    <ListItemIcon>
-                      <CheckCircleOutlineIcon className={classes.done}/>
-                    </ListItemIcon>
-                  }
+        <SwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={tabsKey}
+          onChangeIndex={index => setTabsKey(index)}
+        >
+          <TabPanel value={tabsKey} index={0} dir={theme.direction}>
+            <List className={classes.todoList}>
+              {
+                !!tasksInWork.length
+                  ? <>
+                    {tasksInWork.map((item, index) => (
+                      <ListItem key={item.id}>
+                        <ListItemIcon style={{minWidth: '2rem'}}>
+                          <span className={classes.todoListDecoration}>{index + 1}</span>
+                        </ListItemIcon>
+                        <TodoItemText
+                          primary={item.title}
+                          secondary={`Категория: ${item.category}`}
+                        />
+                        <TodoPopover
+                          item={item}
+                          setTaskUp={setTaskUp}
+                          setTaskDown={setTaskDown}
+                          removeTask={removeTask}
+                          editTask={editTask}
+                        />
+                      </ListItem>
+                    ))}
+                    <ListItem>
+                      <TodoItemText
+                        primary={`Количество помидор: ${tasksInWork.reduce((sum, current) => sum + +current.tomatoCount, 0)} шт`}
+                        secondary={`Потребуется: ${getAllTime(todos, settings.durationOfPomodoro)}`}
+                      />
+                    </ListItem>
+                  </>
+                  : <ListItem>
+                    <TodoItemText
+                      primary='У вас нет задач!'
+                      secondary='Если возникли вопросы, воспользуйтесь инструкцией.'
+                    />
+                  </ListItem>
+              }
+            </List>
+          </TabPanel>
 
-                  <TodoPopover
-                    item={item}
-                    setTaskUp={setTaskUp}
-                    setTaskDown={setTaskDown}
-                    removeTask={removeTask}
-                    editTask={editTask}
-                  />
+          <TabPanel value={tabsKey} index={1} dir={theme.direction}>
+            <List className={classes.todoList}>
+              {
+                !!tasksCompleted.length
+                  ? <>
+                    {tasksCompleted.map((item, index) => (
+                      <ListItem key={item.id}>
+                        <ListItemIcon style={{minWidth: '2rem'}}>
+                          <span className={classes.todoListDecorationDone}>
+                            <CheckCircleOutlineIcon className={classes.done} />
+                          </span>
+                        </ListItemIcon>
 
-                </ListItem>
-              ))}
-              <ListItem>
-                <TodoItemText
-                  primary={`Количество помидор: ${Object.values(todos).reduce((sum, current) => sum + +current.tomatoCount, 0)} шт`}
-                  secondary={`Потребуется: ${getAllTime(todos, settings.durationOfPomodoro)}`}
-                />
-              </ListItem>
-            </> :
-            <ListItem>
-              <TodoItemText
-                primary='У вас нет задач! Если возникли вопросы, воспользуйтесь инструкцией.'
-              />
-            </ListItem>
-          }
-      </List>
+                        <TodoItemText
+                          primary={item.title}
+                          secondary={`Категория: ${item.category}`}
+                        />
+                        <IconButton
+                          onClick={ev => {
+                            ev.preventDefault();
+                            removeTask(item.id);
+                          }}
+                        >
+                          <DeleteOutlineOutlinedIcon className={classes.popoverBtn} />
+                        </IconButton>
+                      </ListItem>
+                    ))}
+                  </>
+                  : <ListItem>
+                    <TodoItemText
+                      primary='У вас нет выполненных задач!'
+                      secondary='После выполнения, они появятся здесь.'
+                    />
+                  </ListItem>
+              }
+            </List>
+          </TabPanel>
+        </SwipeableViews>
+      </div>
     </>
   );
 }

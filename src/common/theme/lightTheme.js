@@ -62,6 +62,8 @@ export const lightTheme = {
     },
     timer: {
       headerBarMain: '#C4C4C4',
+      headerBarAct: '#DC3E22',
+      headerBarPause: '#A8B64F',
       headerBarText: '#FFFFFF',
       remark: '#999999',
     },

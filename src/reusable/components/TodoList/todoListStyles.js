@@ -4,7 +4,7 @@ const todoListStyles = makeStyles(theme => ({
   todoForm: {
     display: 'flex',
     flexDirection: 'column',
-    marginBottom: '20px'
+    marginBottom: '30px'
   },
   todoList: {
     display: 'flex',
@@ -23,6 +23,11 @@ const todoListStyles = makeStyles(theme => ({
     border: `1px solid ${theme.palette.dotedBtn.main}`,
     textAlign: 'center',
     lineHeight: '1.5',
+  },
+  todoListDecorationDone: {
+    marginRight: '10px',
+    minWidth: '25px',
+    height: '25px',
   },
   dotedBtn: {
     color: theme.palette.dotedBtn.main,
@@ -51,6 +56,8 @@ const todoListStyles = makeStyles(theme => ({
     color: theme.palette.errorText.main,
     fontWeight: '500',
   },
+
+
 }));
 
 export default todoListStyles;

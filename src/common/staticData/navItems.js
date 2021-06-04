@@ -1,5 +1,5 @@
-import MainPage from '../../pages/MainPage/MainPage';
-import StatisticsPage from '../../pages/StatisticsPage/StatisticsPage';
+import MainPage from '../../pages/mainPage/MainPage';
+import StatisticsPage from '../../pages/statisticsPage/StatisticsPage';
 import SettingPage from '../../pages/settingPage/SettingPage';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import HomeIcon from '@material-ui/icons/Home';

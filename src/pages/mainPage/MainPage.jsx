@@ -8,18 +8,9 @@ import { useState } from 'react';
 import { PomodoroTimer } from '../../reusable/components/PomodoroTimer/PomodoroTimer';
 
 
-const useStyles = makeStyles(theme => ({
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-}));
-
 function MainPage() {
-  const classes = useStyles();
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
-  const [currentTask, setCurrentTask] = useState([])
+  const [currentTask, setCurrentTask] = useState({})
 
   return (
     <section className='container flex-column'>

@@ -67,6 +67,8 @@ export const darkTheme = {
     },
     timer: {
       headerBarMain: '#1b1b1b',
+      headerBarAct: '#B7280F',
+      headerBarPause: '#02a191',
       headerBarText: '#a8a6a6',
       remark: '#a8a6a6',
     }
