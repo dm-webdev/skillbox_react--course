@@ -49,5 +49,6 @@
   },
   "devDependencies": {
     "prop-types": "^15.7.2"
-  }
+  },
+  "homepage": "https://dm-webdev.ru/pomodoro"
 }

@@ -29,7 +29,7 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import { MessageSwitch } from '../../reusable/customMUI/customSwitch';
 import tomato from '../../assets/img/tomato.svg';
 import useSettingPageStyles from './settingPageStyles';
-import modalVariants from '../../reusable/components/Modal/modalVariants'
+import modalVariants from '../../reusable/components/Modal/modalVariants';
 
 
 function SettingPage() {
@@ -100,9 +100,9 @@ function SettingPage() {
   const handleThemeChange = ev => {
     const choice = ev.target.checked;
     if (choice) {
-      setCurrentThemeName('darkTheme')
+      setCurrentThemeName('darkTheme');
     } else {
-      setCurrentThemeName('lightTheme')
+      setCurrentThemeName('lightTheme');
     }
   };
 

@@ -6,7 +6,7 @@ import navItems from './common/staticData/navItems';
 import { Header } from './reusable/components/Header/Header';
 import { Modal } from './reusable/components/Modal/Modal';
 import { reactLocalStorage } from 'reactjs-localstorage';
-import initialSettings from './common/staticData/initialSettings';
+import { INITIAL_SETTINGS } from './common/utils/constants';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -27,12 +27,13 @@ function App() {
     setMobileOpen(!mobileOpen);
   };
 
+  const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
+
   useEffect(() => {
-    const settings = reactLocalStorage.getObject('settings');
     const isSendMessages = reactLocalStorage.get('isSendMessages');
 
     if (!Object.keys(settings).length) {
-      reactLocalStorage.setObject('settings', initialSettings);
+      reactLocalStorage.setObject('settings', INITIAL_SETTINGS);
     }
     if (isSendMessages === undefined) {
       reactLocalStorage.set('isSendMessages', true);

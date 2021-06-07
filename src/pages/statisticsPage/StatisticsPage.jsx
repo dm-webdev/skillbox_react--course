@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import withTitleUpdate from '../../reusable/hocs/withTitleUpdate';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import {
   capitalizeFirstLetter,
@@ -35,50 +35,7 @@ import { axisAxeStyle, axisStyle, useStatisticsPageStyles } from './statisticsPa
 function StatisticsPage() {
   const theme = useTheme();
   const classes = useStatisticsPageStyles();
-
-  const statisticsData = {
-    12: [
-      { numberOfDay: 3, timerUsageTime: 150, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 4, timerUsageTime: 10, finishedTomatoesTime: 20, pauseTime: 60, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 5, timerUsageTime: 210, finishedTomatoesTime: 20, pauseTime: 90, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 6, timerUsageTime: 45, finishedTomatoesTime: 20, pauseTime: 120, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 1, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 150, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 2, timerUsageTime: 99, finishedTomatoesTime: 20, pauseTime: 180, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 7, timerUsageTime: 90, finishedTomatoesTime: 20, pauseTime: 210, stopCount: 20, pomodoroCount: 3 },
-    ],
-    10: [
-      { numberOfDay: 1, timerUsageTime: 10, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 2, timerUsageTime: 20, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 3, timerUsageTime: 30, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 4, timerUsageTime: 40, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 5, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 6, timerUsageTime: 60, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 7, timerUsageTime: 70, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-    ],
-    13: [
-      { numberOfDay: 1, timerUsageTime: 70, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 2, timerUsageTime: 80, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 3, timerUsageTime: 60, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 4, timerUsageTime: 30, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 5, timerUsageTime: 200, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 6, timerUsageTime: 400, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 7, timerUsageTime: 10, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-    ],
-    14: [
-      { numberOfDay: 4, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 1, timerUsageTime: 50, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 2, timerUsageTime: 15, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-      { numberOfDay: 7, timerUsageTime: 90, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
-    ],
-    15: [
-      { numberOfDay: 3, timerUsageTime: 150, finishedTomatoesTime: 10, pauseTime: 20, stopCount: 50, pomodoroCount: 10 },
-      { numberOfDay: 4, timerUsageTime: 10, finishedTomatoesTime: 0, pauseTime: 30, stopCount: 20, pomodoroCount: 1 },
-      { numberOfDay: 5, timerUsageTime: 35, finishedTomatoesTime: 20, pauseTime: 0, stopCount: 20, pomodoroCount: 2 },
-      { numberOfDay: 6, timerUsageTime: 150, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 0, pomodoroCount: 3 },
-      { numberOfDay: 7, timerUsageTime: 200, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 0 },
-    ],
-  };
-
+  const statisticsData = reactLocalStorage.getObject('statistics');
   const presentData = Object.keys(statisticsData).length ? statisticsData : DEFAULT_STATISTICS;
 
   const weeks = Object.keys(presentData).sort((a, b) => Number(b) - Number(a));
@@ -86,10 +43,6 @@ function StatisticsPage() {
   const [currentWeekNumber, setCurrentWeekNumber] = useState(weeks[0]);
   const [currentWeek, setCurrentWeek] = useState(presentData[currentWeekNumber]);
   const [currentDay, setCurrentDay] = useState(currentWeek.sort((a, b) => a.numberOfDay - b.numberOfDay)[0]);
-
-  useEffect(()=>{
-    console.log(currentDay)
-  }, [currentWeek])
 
   return (
     <section className='container flex-column'>

@@ -28,6 +28,18 @@ export function Modal() {
     setModalProps({});
   };
 
+  useEffect(() => {
+    let close;
+    if (modalProps.needClose) {
+      close = setTimeout(() => {
+        handleClose();
+      }, 3000);
+    }
+    return () => {
+      clearInterval(close);
+    };
+  }, [modalProps]);
+
   // поле ввода
   const [taskTitle, setTaskTitle] = useState('');
   const [fieldTouched, setFieldTouched] = useState(false);

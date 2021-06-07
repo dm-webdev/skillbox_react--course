@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -10,53 +10,61 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import makeBtnStyles from '../../customMUI/makeBtnStyles';
 import PropTypes from 'prop-types';
 import {
+  getActBtnTitle,
   getActionBtnStyle,
   getBarStyle,
   getHelperBtnStyle,
+  getHelperBtnTitle,
   getTimerFaceStyle,
-  usePomodoroTimerStyles
+  usePomodoroTimerStyles,
 } from './pomodoroTimerStyles';
+import { getFormatTime } from '../../../common/utils/timerHelpers';
+import { getISODay, getISOWeek } from 'date-fns';
+import { AppModalContext } from '../Modal/AppModalProvider';
+import modalVariants from '../Modal/modalVariants';
+import { getNumberCount } from '../../../common/utils/formatUtils';
+import { INITIAL_SETTINGS, INITIAL_WEEKLY_STATISTICS } from '../../../common/utils/constants';
 
 
-
-
-
-export function PomodoroTimer({ currentTask }) {
+export function PomodoroTimer({ currentTask, setTodos, setCurrentTask }) {
   const btnClasses = makeBtnStyles();
   const classes = usePomodoroTimerStyles();
-
-  const [view, setView] = useState('initial'); // 'initial' - исходное состояние
-
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
-  // const [currentTask, setCurrentTask] = useState([]);
+  const { isModalOpen, modalProps, setModalProps, setModalOpen } = useContext(AppModalContext);
 
-  const [countPomodoro, setCountPomodoro] = useState(1);
-  // const [currentTime, setCurrentTime] = useState(new Date());
-  //
-  // useEffect(() => {
-  //   const watch = setInterval (() => {
-  //     setCurrentTime(new Date());
-  //   }, 60000);
-  //
-  //   return () => {
-  //     clearInterval(watch);
-  //   };
-  // }, [])
+  const [view, setView] = useState('initial');
+  const [currentTime, setCurrentTime] = useState((settings?.durationOfPomodoro || INITIAL_SETTINGS.durationOfPomodoro) * 60 * 1000);
+  const [timerUsageTime, setTimerUsageTime] = useState(0);
+  const [pauseTime, setPauseTime] = useState(0);
+  const [stopCount, setStopCount] = useState(0);
+  const [pomodoroCount, setPomodoroCount] = useState(0);
+  const [finishedTomatoesTime, setFinishedTomatoesTime] = useState(0);
+  const [timeForFinishedTomatoes, setTimeForFinishedTomatoes] = useState(0);
 
-  // 10: [
-  //   { numberOfDay: 1, timerUsageTime: 10, finishedTomatoesTime: 20, pauseTime: 30, stopCount: 20, pomodoroCount: 3 },
+  useEffect(() => {
+    const currentWeek = (getISOWeek(new Date()) + 1).toString();
+    const numberOfDay = getISODay(new Date()).toString();
+    const statisticsData = reactLocalStorage.getObject('statistics') || {};
 
+    if (!statisticsData[currentWeek]) {
+      statisticsData[currentWeek] = INITIAL_WEEKLY_STATISTICS;
+    } else if (Object.keys(statisticsData).includes(currentWeek)) {
+      const key = statisticsData[currentWeek].findIndex(item => item.numberOfDay === numberOfDay);
+      statisticsData[currentWeek][key]['timerUsageTime'] +=  Math.ceil(timerUsageTime / 60000);
+      statisticsData[currentWeek][key]['finishedTomatoesTime'] += Math.ceil(finishedTomatoesTime / 60000);
+      statisticsData[currentWeek][key]['pauseTime'] += Math.ceil(pauseTime / 60000);
+      statisticsData[currentWeek][key]['stopCount'] += stopCount;
+      statisticsData[currentWeek][key]['pomodoroCount'] += pomodoroCount;
+      statisticsData[currentWeek][key]['numberOfDay'] = numberOfDay;
+    }
 
-  // todoList
-  // const [currentThemeName, setCurrentThemeName] = useLocalStorage('todos');
-
-  // categories: ["Работа", "Учеба", "Новая категория", "Английский", "Еще категория", "И еще категория"]
-  // durationOfLongPause: 15
-  // durationOfPomodoro: "40"
-  // durationOfShotPause: "9"
-  // frequencyOfLongPauses: 3
-  // userName: "Denis"
-  const [currentTimer, setCurrentTimer] = useState(+settings.durationOfPomodoro * 60 * 1000);
+    reactLocalStorage.setObject('statistics', statisticsData);
+    setTimerUsageTime(0);
+    setFinishedTomatoesTime(0);
+    setPauseTime(0);
+    setStopCount(0);
+    setPomodoroCount(0);
+  }, [view]);
 
   function handleClickActBtn(view) {
     switch (view) {
@@ -74,7 +82,7 @@ export function PomodoroTimer({ currentTask }) {
         setView('pause');
         break;
       default:
-        console.log('Hi');
+        return null;
     }
   }
 
@@ -82,102 +90,160 @@ export function PomodoroTimer({ currentTask }) {
     switch (view) {
       case 'act':
       case 'hover':
+        setCurrentTime(+settings.durationOfPomodoro * 60 * 1000);
+        setStopCount(stopCount + 1);
+        setTimeForFinishedTomatoes(0);
         setView('initial');
         break;
       case 'stopAct':
+        const isShowMessages = reactLocalStorage.get('isSendMessages')  === 'true';
+        const tasks = reactLocalStorage.getObject('todos');
+        setPomodoroCount(pomodoroCount + 1);
+        tasks[currentTask.id].spentTomatoes += 1;
+        tasks[currentTask.id].done = true;
+        tasks[currentTask.id].order = -10;
+        setTodos(tasks);
+        setCurrentTask(tasks[currentTask.id]);
+        reactLocalStorage.setObject('todos', tasks);
+        setFinishedTomatoesTime(timeForFinishedTomatoes);
+        setTimeForFinishedTomatoes(0);
+        setCurrentTime(+settings.durationOfPomodoro * 60 * 1000);
         setView('initial');
-        // + помидор и + время
+        if (isShowMessages) {
+          console.log(isShowMessages);
+          setModalOpen(!isModalOpen);
+          setModalProps(modalVariants.successByDone);
+        }
         break;
       case 'pause':
-      case 'stopPause':
+        setCurrentTime(+settings.durationOfPomodoro * 60 * 1000);
+        setStopCount(stopCount + 1);
+        setTimeForFinishedTomatoes(0);
         setView('initial');
-        // + время паузы
+        break;
+      case 'stopPause':
+        setCurrentTime(+settings.durationOfPomodoro * 60 * 1000);
+        setTimeForFinishedTomatoes(0);
+        setView('initial');
         break;
       default:
-        console.log('Hi')
+        return null;
     }
   }
 
   function onMouseMotion(view) {
     switch (view) {
       case 'act':
-        setView('hover')
+        setView('hover');
         break;
       case 'hover':
-        setView('act')
+        setView('act');
         break;
       default:
-        console.log('Hi')
+        return null;
     }
   }
-
-  function getActBtnTitle(view) {
-    switch (view) {
-      case 'initial':
-        return 'Старт';
-      case 'act':
-      case 'hover':
-        return 'Пауза';
-      case 'stopAct':
-      case 'stopPause':
-        return 'Продолжить';
-      case 'pause':
-        return 'Пауза';
-      default:
-        return 'Старт';
-    }
-  }
-
-  function getHelperBtnTitle(view) {
-    switch (view) {
-      case 'initial':
-      case 'act':
-      case 'hover':
-        return 'Стоп';
-      case 'stopAct':
-        return 'Сделано';
-      case 'stopPause':
-      case 'pause':
-        return 'Пропустить';
-      default:
-        return 'Стоп';
-    }
-  }
-
-
-
-
 
   useEffect(() => {
-    console.log(currentTimer)
-    // console.log(currentThemeName);
-    console.log(currentTask)
-    // setCurrentTask(Object.values(reactLocalStorage.getObject('todos')).sort((a, b) => a.order - b.order)[0])
-  }, [])
+    const isShowMessages = reactLocalStorage.get('isSendMessages')  === 'true';
+    const watch = setInterval (() => {
+      switch(view) {
+        case 'act':
+        case 'hover':
+          setCurrentTime(currentTime - 1000);
+          setTimerUsageTime(timerUsageTime + 1000);
+          setTimeForFinishedTomatoes(timeForFinishedTomatoes + 1000);
+
+          if (currentTime <= 0) {
+            const tasks = reactLocalStorage.getObject('todos');
+            setPomodoroCount(pomodoroCount + 1);
+            tasks[currentTask.id].spentTomatoes += 1;
+            setTodos(tasks);
+            setCurrentTask(tasks[currentTask.id])
+            reactLocalStorage.setObject('todos', tasks);
+            setCurrentTime(
+              !!tasks[currentTask.id].spentTomatoes && !(tasks[currentTask.id].spentTomatoes % +settings.frequencyOfLongPauses)
+                ? +settings.durationOfLongPause * 60 * 1000
+                : +settings.durationOfShotPause * 60 * 1000);
+            setFinishedTomatoesTime(timeForFinishedTomatoes);
+            setTimeForFinishedTomatoes(0);
+            setView('pause');
+            if (isShowMessages) {
+              setModalOpen(!isModalOpen);
+              setModalProps(modalVariants.successByAct);
+            }
+          }
+          break;
+        case 'pause':
+          setCurrentTime(currentTime - 1000);
+          setTimerUsageTime(timerUsageTime + 1000);
+
+          if (currentTime <= 0) {
+            const tasks = reactLocalStorage.getObject('todos');
+            tasks[currentTask.id].spentPauses += 1;
+            setTodos(tasks);
+            setCurrentTask(tasks[currentTask.id])
+            reactLocalStorage.setObject('todos', tasks);
+            setCurrentTime(+settings.durationOfPomodoro * 60 * 1000);
+            setView('initial');
+            if (isShowMessages) {
+              setModalOpen(!isModalOpen);
+              setModalProps(modalVariants.successByPause);
+            }
+          }
+          break;
+        case 'stopAct':
+        case 'stopPause':
+          setTimerUsageTime(timerUsageTime + 1000);
+          setPauseTime(pauseTime + 1000);
+          break;
+        default:
+          return null
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(watch);
+    };
+  }, [view, currentTime, timerUsageTime, pomodoroCount, pauseTime, timeForFinishedTomatoes]);
 
   return (
     <Card className={classes.root}>
       <div className={getBarStyle(view, classes)}>
         <Typography variant='h2' color='textPrimary' className={classes.headerBarText}>
-          { currentTask?.title || 'Задача' }
+          {currentTask?.title || 'Задача'}
         </Typography>
 
         <Typography className={classes.headerBarText}>
-          Помидор {countPomodoro}
+          {!(view === 'pause' || view === 'stopPause')
+            ? `Помидор ${getNumberCount(+currentTask?.spentTomatoes)}`
+            : `Перерыв ${getNumberCount(+currentTask?.spentPauses)}`}
         </Typography>
       </div>
 
       <div className={classes.timerWrap}>
-        <span className={getTimerFaceStyle(view, classes)}>25:00</span>
+        <span className={getTimerFaceStyle(view, classes)}>{getFormatTime(currentTime)}</span>
 
-        <IconButton aria-label="add to favorites" className={classes.addBtn}>
+        <IconButton
+          aria-label='увеличить интервал'
+          className={classes.addBtn}
+          disabled={!(view === 'pause' || view === 'initial')}
+          type='button'
+          onClick={ev => {
+            setCurrentTime(currentTime + 3 * 60 * 1000)
+          }}
+        >
           <AddCircleIcon className={classes.addBtnIcon} />
         </IconButton>
       </div>
 
       <CardContent>
         <Typography variant='body2' color='textPrimary' component='p' className={classes.timerContent}>
-          {currentTask?.title ? <><span className={classes.timerContentRemark}>Задача 1 - </span>{currentTask?.title}</> : 'Выбирите задачу!'}
+          {
+            currentTask?.title
+              ? <><span className={classes.timerContentRemark}>Задача - </span>{currentTask?.title}</>
+              : 'Выбирите задачу!'
+          }
         </Typography>
       </CardContent>
 
@@ -188,11 +254,12 @@ export function PomodoroTimer({ currentTask }) {
           variant='contained'
           className={getActionBtnStyle(view, btnClasses)}
           type='button'
-          style={{marginRight: 15}}
+          style={{ marginRight: 15 }}
           onClick={ev => {
             ev.preventDefault();
             handleClickActBtn(view)
           }}
+          disabled={!Object.keys(currentTask || {}).length}
         >
           {getActBtnTitle(view)}
         </Button>
@@ -210,19 +277,14 @@ export function PomodoroTimer({ currentTask }) {
           onMouseOut={() => onMouseMotion(view)}
         >
           {getHelperBtnTitle(view)}
-          {/*{(view === 'initial' || view === 'act' || view ==='hover') && 'Стоп'}*/}
-          {/*{view === 'stopAct' && 'Сделано'}*/}
-          {/*{(view === 'pause' || view === 'stopPause') && 'Пропустить'}*/}
         </Button>
       </CardActions>
     </Card>
   );
 }
-//
+
 PomodoroTimer.propTypes = {
   currentTask: PropTypes.object,
-//   // setTaskUp: PropTypes.func.isRequired,
-//   // setTaskDown: PropTypes.func.isRequired,
-//   // removeTask: PropTypes.func.isRequired,
-//   // editTask: PropTypes.func.isRequired,
+  setTodos: PropTypes.func.isRequired,
+  setCurrentTask: PropTypes.func.isRequired,
 }

@@ -17,7 +17,6 @@ export function getHelperBtnStyle(view, btnClasses) {
       return btnClasses.helperBtn;
     default:
       return btnClasses.helperBtn;
-      // return btnClasses.secondaryBtn;
   }
 }
 
@@ -50,6 +49,39 @@ export function getTimerFaceStyle(view, classes) {
       return classes.timerFaceStop;
     default:
       return classes.timerFaceMain;
+  }
+}
+
+export function getHelperBtnTitle(view) {
+  switch (view) {
+    case 'initial':
+    case 'act':
+    case 'hover':
+      return 'Стоп';
+    case 'stopAct':
+      return 'Сделано';
+    case 'stopPause':
+    case 'pause':
+      return 'Пропустить';
+    default:
+      return 'Стоп';
+  }
+}
+
+export function getActBtnTitle(view) {
+  switch (view) {
+    case 'initial':
+      return 'Старт';
+    case 'act':
+    case 'hover':
+      return 'Пауза';
+    case 'stopAct':
+    case 'stopPause':
+      return 'Продолжить';
+    case 'pause':
+      return 'Пауза';
+    default:
+      return 'Старт';
   }
 }
 

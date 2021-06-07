@@ -72,7 +72,7 @@ export function getTimeLabelForPause(min) {
   const minLabel = `${Math.floor(min % 60)}м`;
   const hourLabel = min / 60 >= 1 ? `${Math.floor(min / 60)}ч ` : null;
   if (hourLabel) {
-    return hourLabel + minLabel
+    return hourLabel + minLabel;
   }
   return minLabel;
 }
@@ -90,4 +90,11 @@ export function getHumanTimeInterval(interval) {
     return `${min} ${minDesc}`;
   }
   return `${hours} ${hoursDesc} ${min} ${minDesc}`;
+}
+
+export function getNumberCount(value) {
+  if (!value || !Number.isFinite(value)) {
+    return 1;
+  }
+  return value + 1;
 }

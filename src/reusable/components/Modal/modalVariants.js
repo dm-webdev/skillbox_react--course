@@ -11,6 +11,24 @@ const modalVariants = {
     description: 'Ваши изменения успешно сохранены!',
     needClose: true,
   },
+  successByDone: {
+    type: 'success',
+    title: 'Готово!',
+    description: 'Задача успешно завершена!',
+    needClose: true,
+  },
+  successByAct: {
+    type: 'success',
+    title: 'Внимание!',
+    description: 'Пора отдохнуть!',
+    needClose: true,
+  },
+  successByPause: {
+    type: 'success',
+    title: 'Внимание!',
+    description: 'Пора поработать! Жми Старт!',
+    needClose: true,
+  },
   deleteByTaskList: {
     type: 'delete',
     title: 'Удалить задачу?',

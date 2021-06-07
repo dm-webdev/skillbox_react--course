@@ -11,7 +11,7 @@ export const Accordion = withStyles(theme => ({
   },
 }))(MuiAccordion);
 
-export const AccordionSummary = withStyles({
+export const AccordionSummary = withStyles(theme => ({
   content: {
     fontSize: '1.2rem',
     fontWeight: '600',
@@ -19,4 +19,4 @@ export const AccordionSummary = withStyles({
   focused: {
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
   }
-})(MuiAccordionSummary);
+}))(MuiAccordionSummary);

@@ -33,9 +33,10 @@ import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import { a11yProps, TabPanel } from '../../customMUI/customTabs';
+import { INITIAL_SETTINGS } from '../../../common/utils/constants';
 
 
-export function TodoList({ setCurrentTask }) {
+export function TodoList({ todos, setTodos, setCurrentTask }) {
   const classes = todoListStyles();
   const btnClasses = makeBtnStyles();
   const theme = useTheme();
@@ -43,7 +44,6 @@ export function TodoList({ setCurrentTask }) {
   const [tabsKey, setTabsKey] = useState(0);
 
   // todoList
-  const [todos, setTodos] = useState(reactLocalStorage.getObject('todos') || {});
   const [newTask, setNewTask] = useState({});
   const [formTouched, setFormTouched] = useState({});
   const [formErrors, setFormErrors] = useState({});
@@ -75,6 +75,8 @@ export function TodoList({ setCurrentTask }) {
         ...newTask,
         id,
         order: Object.keys(todosFromState).length + 1,
+        spentTomatoes: 0,
+        spentPauses: 0,
         done: false,
       };
       setTodos(todosFromState);
@@ -99,8 +101,6 @@ export function TodoList({ setCurrentTask }) {
       sortedTasks[id].order -= 1;
       setTodos(sortedTasks);
       reactLocalStorage.setObject('todos', sortedTasks);
-    } else {
-      console.log('это верхняя задача')
     }
   }
 
@@ -111,8 +111,6 @@ export function TodoList({ setCurrentTask }) {
       sortedTasks[id].order += 1;
       setTodos(sortedTasks);
       reactLocalStorage.setObject('todos', sortedTasks);
-    } else {
-      console.log('это нижняя задача')
     }
   }
 
@@ -135,6 +133,10 @@ export function TodoList({ setCurrentTask }) {
       setCurrentTask(workList[0]);
       setTaskInWork(workList);
       setTaskCompleted(Object.values(todos).filter(item => item.done === true).sort((a, b) => a.order - b.order))
+    } else {
+      setCurrentTask({});
+      setTaskInWork([]);
+      setTaskCompleted([]);
     }
   }, [todos])
 
@@ -192,9 +194,13 @@ export function TodoList({ setCurrentTask }) {
                 MenuProps={MenuSelectProps}
               >
                 {
-                  settings.categories.map((item, index) => (
-                    <MenuItem className={classes.selectOptions} value={item} key={index}>{item}</MenuItem>
-                  ))
+                  settings?.categories
+                    ? settings.categories.map((item, index) => (
+                      <MenuItem className={classes.selectOptions} value={item} key={index}>{item}</MenuItem>
+                    ))
+                    : INITIAL_SETTINGS.categories.map((item, index) => (
+                      <MenuItem className={classes.selectOptions} value={item} key={index}>{item}</MenuItem>
+                    ))
                 }
               </ToDoSelect>
               {
@@ -247,7 +253,7 @@ export function TodoList({ setCurrentTask }) {
           <TabPanel value={tabsKey} index={0} dir={theme.direction}>
             <List className={classes.todoList}>
               {
-                !!tasksInWork.length
+                tasksInWork.length
                   ? <>
                     {tasksInWork.map((item, index) => (
                       <ListItem key={item.id}>
@@ -270,7 +276,7 @@ export function TodoList({ setCurrentTask }) {
                     <ListItem>
                       <TodoItemText
                         primary={`Количество помидор: ${tasksInWork.reduce((sum, current) => sum + +current.tomatoCount, 0)} шт`}
-                        secondary={`Потребуется: ${getAllTime(todos, settings.durationOfPomodoro)}`}
+                        secondary={`Потребуется: ${getAllTime(tasksInWork, settings.durationOfPomodoro)}`}
                       />
                     </ListItem>
                   </>
@@ -328,9 +334,7 @@ export function TodoList({ setCurrentTask }) {
 }
 
 TodoList.propTypes = {
-  // currentTask: PropTypes.array,
+  todos: PropTypes.object.isRequired,
+  setTodos: PropTypes.func.isRequired,
   setCurrentTask: PropTypes.func.isRequired,
-  // setTaskDown: PropTypes.func.isRequired,
-  // removeTask: PropTypes.func.isRequired,
-  // editTask: PropTypes.func.isRequired,
 }
