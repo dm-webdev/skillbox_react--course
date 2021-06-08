@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 import Menu from './reusable/components/Menu/Menu';
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect } from 'react-router-dom';
 import navItems from './common/staticData/navItems';
 import { Header } from './reusable/components/Header/Header';
 import { Modal } from './reusable/components/Modal/Modal';
