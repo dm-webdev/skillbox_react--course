@@ -84,7 +84,7 @@ export function getHumanTimeInterval(interval) {
 
   const hours = Math.floor(interval / 60);
   const min = Math.trunc(interval % 60);
-  const hoursDesc = declOfNum(hours, ['часов', 'часов', 'часов']);
+  const hoursDesc = declOfNum(hours, ['часов', 'часа', 'часов']);
   const minDesc = declOfNum(min, ['минут', 'минут', 'минут']);
   if (hours === 0) {
     return `${min} ${minDesc}`;
