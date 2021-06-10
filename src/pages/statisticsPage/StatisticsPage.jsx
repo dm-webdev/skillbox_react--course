@@ -29,7 +29,7 @@ import { Background, VictoryAxis, VictoryBar, VictoryChart, VictoryTheme } from 
 import { ReactComponent as HappyTomato } from '../../assets/img/happy-tomato.svg';
 import { ReactComponent as Tomato } from '../../assets/img/tomato.svg';
 import { DAYS_LIST, DEFAULT_STATISTICS } from '../../common/utils/constants';
-import { axisAxeStyle, axisStyle, useStatisticsPageStyles } from './statisticsPageStyles';
+import { axisXStyle, axisYStyle, useStatisticsPageStyles } from './statisticsPageStyles';
 
 
 function StatisticsPage() {
@@ -145,7 +145,7 @@ function StatisticsPage() {
               <VictoryAxis
                 tickValues={[1, 2, 3, 4, 5, 6, 7]}
                 tickFormat={['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']}
-                style={axisStyle(currentWeek, theme, currentDay)}
+                style={axisXStyle(currentWeek, theme, currentDay)}
               />
 
               <VictoryAxis
@@ -153,7 +153,7 @@ function StatisticsPage() {
                 tickFormat={x => getTimeLabelForAxe(x)}
                 offsetX={360}
                 padding={{ top: 10, bottom: 10, left: 10, right: -10 }}
-                style={axisAxeStyle(theme)}
+                style={axisYStyle(theme)}
                 animate={{
                   easing: 'linear',
                   duration: 500,
