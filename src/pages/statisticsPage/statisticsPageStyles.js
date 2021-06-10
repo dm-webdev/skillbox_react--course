@@ -189,12 +189,12 @@ export const useStatisticsPageStyles = makeStyles(theme => ({
   },
 }))
 
-export function axisStyle(currentWeek, theme, currentDay) {
+export function axisXStyle(currentWeek, theme, currentDay) {
   return {
     axis: { stroke: 'inherit' },
     grid: { stroke: 'inherit' },
     ticks: {
-      stroke: ({ tick }) => !!currentWeek.find(item => item.numberOfDay === tick)?.timerUsageTime
+      stroke: ({ tick }) => !!currentWeek.find(item => +item.numberOfDay === tick)?.timerUsageTime
         ? 'inherit'
         : theme.palette.graph.tick,
       strokeWidth: '35px',
@@ -204,14 +204,14 @@ export function axisStyle(currentWeek, theme, currentDay) {
     tickLabels: {
       fontSize: 8,
       padding: 8,
-      fill: ({ tick }) => tick === currentDay.numberOfDay
+      fill: ({ tick }) => tick === +currentDay.numberOfDay
         ? theme.palette.graph.barHover
         : theme.palette.text.primary,
     }
   }
 }
 
-export function axisAxeStyle(theme) {
+export function axisYStyle(theme) {
   return {
     axis: {
       stroke: 'inherit'
