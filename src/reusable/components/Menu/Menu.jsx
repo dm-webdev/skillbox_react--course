@@ -23,7 +23,7 @@ import { capitalizeFirstLetter } from '../../../common/utils/formatUtils';
 import { menuStyles } from './menuStyles';
 
 
-function Menu({ mobileOpen, handleDrawerToggle }) {
+function Menu({ mobileOpen, handleDrawerToggle, handleDrawerClose }) {
   const classes = menuStyles();
   const theme = useTheme();
   const { currentThemeName, setCurrentThemeName } = useContext(AppThemeContext);
@@ -63,7 +63,7 @@ function Menu({ mobileOpen, handleDrawerToggle }) {
       <Divider />
       <List className={classes.navList}>
         {navItems.map(item => (
-          <Link to={item.slug}  key={item.id}>
+          <Link to={item.slug}  key={item.id} onClick={handleDrawerClose}>
             <ListItem button>
               <ListItemIcon>{item.icon('secondary')}</ListItemIcon>
               <ListItemText primary={item.name} />
@@ -122,6 +122,7 @@ function Menu({ mobileOpen, handleDrawerToggle }) {
 Menu.propTypes = {
   mobileOpen: PropTypes.bool.isRequired,
   handleDrawerToggle: PropTypes.func.isRequired,
+  handleDrawerClose: PropTypes.func.isRequired,
 };
 
 export default Menu;

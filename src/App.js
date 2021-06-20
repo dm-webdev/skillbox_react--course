@@ -27,6 +27,10 @@ function App() {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleDrawerClose = () => {
+    setMobileOpen(false);
+  };
+
   const [settings, setSettings] = useState(reactLocalStorage.getObject('settings'));
 
   useEffect(() => {
@@ -48,6 +52,7 @@ function App() {
         <Menu
           mobileOpen={mobileOpen}
           handleDrawerToggle={handleDrawerToggle}
+          handleDrawerClose={handleDrawerClose}
         />
 
         <main className={classes.content}>
